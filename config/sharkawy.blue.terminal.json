@@ -1,0 +1,40 @@
+{
+  "scheme": {
+    "name": "Sharkawy Harbor Preview",
+    "background": "#0F1B2E",
+    "foreground": "#DCE7F7",
+    "cursorColor": "#9FC7F5",
+    "selectionBackground": "#2A4163",
+    "black": "#172940",
+    "red": "#ED9B91",
+    "green": "#9FC7F5",
+    "yellow": "#E6BD87",
+    "blue": "#BECAF1",
+    "purple": "#D4B8D6",
+    "cyan": "#A7D6EC",
+    "white": "#DCE7F7",
+    "brightBlack": "#8FA8C9",
+    "brightRed": "#F3B6AE",
+    "brightGreen": "#B7D8FA",
+    "brightYellow": "#EFD1AA",
+    "brightBlue": "#D1E2FA",
+    "brightPurple": "#E3CDE4",
+    "brightCyan": "#C2E6F5",
+    "brightWhite": "#F1F6FF"
+  },
+  "profile": {
+    "colorScheme": "Sharkawy Harbor Preview",
+    "font": {
+      "face": "CaskaydiaCove Nerd Font",
+      "size": 12,
+      "weight": "normal"
+    },
+    "padding": "20, 16, 20, 16",
+    "cursorShape": "bar",
+    "opacity": 100,
+    "useAcrylic": false,
+    "antialiasingMode": "grayscale",
+    "backgroundImage": "none",
+    "tabColor": "#263D60"
+  }
+}

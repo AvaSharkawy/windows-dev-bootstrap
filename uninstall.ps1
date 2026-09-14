@@ -9,6 +9,17 @@ $BootstrapRoot = Join-Path $HOME '.config\windows-dev-bootstrap'
 
 Write-Host 'Windows Dev Bootstrap cleanup' -ForegroundColor Cyan
 
+if (-not $PSCmdlet.ShouldProcess($BootstrapRoot, 'Remove bootstrap configuration and restore the PowerShell profile')) { return }
+
+$themeScript = Join-Path $BootstrapRoot 'themes.ps1'
+$settingsPath = Join-Path $env:LOCALAPPDATA 'Packages\Microsoft.WindowsTerminal_8wekyb3d8bbwe\LocalState\settings.json'
+if ((Test-Path -LiteralPath $themeScript) -and (Test-Path -LiteralPath $settingsPath)) {
+    foreach ($color in @('Green', 'Blue')) {
+        & pwsh -NoLogo -NoProfile -ExecutionPolicy Bypass -File $themeScript -Theme $color -Remove -ResetDefault -SettingsPath $settingsPath
+        if ($LASTEXITCODE -ne 0) { throw "Could not remove $color from Terminal settings. Configuration files have been kept." }
+    }
+}
+
 if (Test-Path $BootstrapRoot) {
     Remove-Item $BootstrapRoot -Recurse -Force
     Write-Host "Removed $BootstrapRoot" -ForegroundColor Green

@@ -1,6 +1,8 @@
 #Requires -Version 5.1
 [CmdletBinding()]
 param(
+    [ValidateSet('Green', 'Blue')]
+    [string]$Theme = 'Green',
     [switch]$SkipGit,
     [switch]$SkipTerminalConfiguration
 )
@@ -13,7 +15,7 @@ $RepoName = 'windows-dev-bootstrap'
 $Branch = 'main'
 $RawBase = "https://raw.githubusercontent.com/$RepoOwner/$RepoName/$Branch"
 $BootstrapRoot = Join-Path $HOME '.config\windows-dev-bootstrap'
-$ThemePath = Join-Path $BootstrapRoot 'sharkawy.omp.json'
+$ConfigRoot = Join-Path $BootstrapRoot 'config'
 
 function Write-Step([string]$Message) { Write-Host "`n==> $Message" -ForegroundColor Cyan }
 function Write-Ok([string]$Message) { Write-Host "[OK] $Message" -ForegroundColor Green }
@@ -54,7 +56,7 @@ Write-Host @'
                WINDOWS DEV BOOTSTRAP
 ============================================================
  PowerShell 7 | Windows Terminal | Oh My Posh | PSReadLine
- Meslo Nerd Font | Git | Predictive IntelliSense
+ CaskaydiaCove Nerd Font | Git | Predictive IntelliSense
 ============================================================
 '@ -ForegroundColor Cyan
 
@@ -81,22 +83,29 @@ $pwshVersion = & pwsh -NoLogo -NoProfile -Command '$PSVersionTable.PSVersion.ToS
 Write-Ok "PowerShell $pwshVersion"
 Write-Ok "Oh My Posh $(& oh-my-posh version)"
 
-Write-Step 'Installing Meslo Nerd Font'
+Write-Step 'Installing CaskaydiaCove Nerd Font'
 try {
-    & oh-my-posh font install meslo
+    & oh-my-posh font install CascadiaCode
     if ($LASTEXITCODE -ne 0) {
         Write-Warn 'Oh My Posh returned a non-zero result while installing Meslo. Setup will continue.'
     } else {
-        Write-Ok 'Meslo Nerd Font installed/verified'
+        Write-Ok 'CaskaydiaCove Nerd Font installed/verified'
     }
 } catch {
     Write-Warn "Font installation could not be completed automatically: $($_.Exception.Message)"
 }
 
-Write-Step 'Downloading repository-owned theme'
-New-Item -ItemType Directory -Path $BootstrapRoot -Force | Out-Null
-Invoke-WebRequest "$RawBase/config/sharkawy.omp.json" -OutFile $ThemePath
-Write-Ok "Theme: $ThemePath"
+Write-Step 'Downloading both themes and the theme switcher'
+New-Item -ItemType Directory -Path $ConfigRoot -Force | Out-Null
+foreach ($file in @('sharkawy.omp.json', 'sharkawy.blue.omp.json', 'sharkawy.terminal.json', 'sharkawy.blue.terminal.json', 'Microsoft.PowerShell_profile.ps1')) {
+    $destination = Join-Path $ConfigRoot $file
+    Backup-File $destination
+    Invoke-WebRequest "$RawBase/config/$file" -UseBasicParsing -OutFile $destination
+}
+$ThemeScript = Join-Path $BootstrapRoot 'themes.ps1'
+Backup-File $ThemeScript
+Invoke-WebRequest "$RawBase/themes.ps1" -UseBasicParsing -OutFile $ThemeScript
+Write-Ok "Themes: $ConfigRoot"
 
 Write-Step 'Checking PSReadLine for PowerShell 7'
 $psReadLineVersion = (& pwsh -NoLogo -NoProfile -Command "`$m = Get-Module -ListAvailable PSReadLine | Sort-Object Version -Descending | Select-Object -First 1; if (`$m) { `$m.Version.ToString() }").Trim()
@@ -113,7 +122,7 @@ $PwshProfile = (& pwsh -NoLogo -NoProfile -Command '$PROFILE.CurrentUserCurrentH
 $ProfileDir = Split-Path $PwshProfile -Parent
 New-Item -ItemType Directory -Path $ProfileDir -Force | Out-Null
 Backup-File $PwshProfile
-Invoke-WebRequest "$RawBase/config/Microsoft.PowerShell_profile.ps1" -OutFile $PwshProfile
+Copy-Item -LiteralPath (Join-Path $ConfigRoot 'Microsoft.PowerShell_profile.ps1') -Destination $PwshProfile -Force
 Write-Ok "Profile: $PwshProfile"
 
 if (-not $SkipTerminalConfiguration) {
@@ -123,30 +132,18 @@ if (-not $SkipTerminalConfiguration) {
     New-Item -ItemType Directory -Path $settingsDir -Force | Out-Null
 
     try {
-        if (Test-Path $settingsPath) {
-            Backup-File $settingsPath
-            $settings = Get-Content $settingsPath -Raw | ConvertFrom-Json
-        } else {
-            $settings = [pscustomobject]@{}
+        if (-not (Test-Path -LiteralPath $settingsPath)) {
+            '{}' | Set-Content -LiteralPath $settingsPath -Encoding utf8
         }
-
-        if (-not $settings.profiles) {
-            $settings | Add-Member NoteProperty profiles ([pscustomobject]@{})
+        foreach ($color in @('Green', 'Blue')) {
+            $arguments = @('-NoLogo', '-NoProfile', '-ExecutionPolicy', 'Bypass', '-File', $ThemeScript, '-Theme', $color, '-NoLaunch', '-SettingsPath', $settingsPath)
+            if ($color -eq $Theme) { $arguments += '-SetDefault' }
+            & pwsh @arguments
+            if ($LASTEXITCODE -ne 0) { throw "Failed to configure $color (exit $LASTEXITCODE)." }
         }
-        if (-not $settings.profiles.defaults) {
-            $settings.profiles | Add-Member NoteProperty defaults ([pscustomobject]@{})
-        }
-        if (-not $settings.profiles.defaults.font) {
-            $settings.profiles.defaults | Add-Member NoteProperty font ([pscustomobject]@{})
-        }
-
-        $settings.profiles.defaults.font | Add-Member NoteProperty face 'MesloLGM Nerd Font' -Force
-        $settings | Add-Member NoteProperty defaultProfile '{574e775e-4f2a-5b96-ac1e-a2962a402336}' -Force
-
-        $settings | ConvertTo-Json -Depth 100 | Set-Content $settingsPath -Encoding utf8
-        Write-Ok 'Windows Terminal font/default PowerShell 7 profile configured'
+        Write-Ok "Both themes installed. Default: Sharkawy - $Theme"
     } catch {
-        Write-Warn "Windows Terminal settings were not changed: $($_.Exception.Message)"
+        Write-Warn "Windows Terminal setup did not finish: $($_.Exception.Message)"
     }
 }
 
@@ -156,6 +153,6 @@ Write-Host @'
                     SETUP COMPLETE
 ============================================================
 Close every Windows Terminal window and reopen it.
-Use the profile named "PowerShell" (PowerShell 7), not "Windows PowerShell".
+Choose "Sharkawy - Green" or "Sharkawy - Blue" from the profile menu.
 ============================================================
 '@ -ForegroundColor Green

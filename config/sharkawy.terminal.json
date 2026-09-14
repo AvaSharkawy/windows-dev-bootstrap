@@ -1,0 +1,40 @@
+{
+  "scheme": {
+    "name": "Sharkawy Grove Preview",
+    "background": "#111917",
+    "foreground": "#DCE8E2",
+    "cursorColor": "#A6DFC3",
+    "selectionBackground": "#31453D",
+    "black": "#1B2822",
+    "red": "#ED9B91",
+    "green": "#A6DFC3",
+    "yellow": "#E6BD87",
+    "blue": "#B5C9E2",
+    "purple": "#D4B8D6",
+    "cyan": "#9ED6D1",
+    "white": "#DCE8E2",
+    "brightBlack": "#91A8A0",
+    "brightRed": "#F3B6AE",
+    "brightGreen": "#BCEBD3",
+    "brightYellow": "#EFD1AA",
+    "brightBlue": "#CDDEF2",
+    "brightPurple": "#E3CDE4",
+    "brightCyan": "#BCE6E1",
+    "brightWhite": "#F2F7F4"
+  },
+  "profile": {
+    "colorScheme": "Sharkawy Grove Preview",
+    "font": {
+      "face": "CaskaydiaCove Nerd Font",
+      "size": 12,
+      "weight": "normal"
+    },
+    "padding": "20, 16, 20, 16",
+    "cursorShape": "bar",
+    "opacity": 100,
+    "useAcrylic": false,
+    "antialiasingMode": "grayscale",
+    "backgroundImage": "none",
+    "tabColor": "#243D32"
+  }
+}

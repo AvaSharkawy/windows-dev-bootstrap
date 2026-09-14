@@ -5,7 +5,7 @@
   "console_title_template": "{{ .Folder }} · PowerShell",
   "secondary_prompt": {
     "template": "\uf101 ",
-    "foreground": "#91A8A0",
+    "foreground": "#8FA8C9",
     "background": "transparent"
   },
   "blocks": [
@@ -17,7 +17,7 @@
         {
           "type": "path",
           "style": "plain",
-          "foreground": "#A6DFC3",
+          "foreground": "#9FC7F5",
           "template": "{{ if eq .Path \"~\" }}\uf015  <b>Home</b>{{ else }}\uf07c  <b>{{ .Path }}</b>{{ end }}",
           "properties": {
             "style": "folder",
@@ -29,8 +29,8 @@
         {
           "type": "git",
           "style": "plain",
-          "foreground": "#B5C9E2",
-          "template": "   {{ .HEAD }}{{ if .Working.Changed }}  <#E6BD87>\uf044 {{ add .Working.Added .Working.Modified .Working.Deleted .Working.Untracked .Working.Unmerged }}</>{{ end }}{{ if .Staging.Changed }}  <#A6DFC3>\uf046 {{ add .Staging.Added .Staging.Modified .Staging.Deleted .Staging.Untracked .Staging.Unmerged }}</>{{ end }}{{ if gt .Ahead 0 }}  \uf062 {{ .Ahead }}{{ end }}{{ if gt .Behind 0 }}  \uf063 {{ .Behind }}{{ end }}{{ if gt .StashCount 0 }}  <#91A8A0>\uf187 {{ .StashCount }}</>{{ end }}",
+          "foreground": "#BECAF1",
+          "template": "   {{ .HEAD }}{{ if .Working.Changed }}  <#E6BD87>\uf044 {{ add .Working.Added .Working.Modified .Working.Deleted .Working.Untracked .Working.Unmerged }}</>{{ end }}{{ if .Staging.Changed }}  <#9FC7F5>\uf046 {{ add .Staging.Added .Staging.Modified .Staging.Deleted .Staging.Untracked .Staging.Unmerged }}</>{{ end }}{{ if gt .Ahead 0 }}  \uf062 {{ .Ahead }}{{ end }}{{ if gt .Behind 0 }}  \uf063 {{ .Behind }}{{ end }}{{ if gt .StashCount 0 }}  <#8FA8C9>\uf187 {{ .StashCount }}</>{{ end }}",
           "properties": {
             "branch_icon": "\ue0a0 ",
             "fetch_status": true,
@@ -57,7 +57,7 @@
         {
           "type": "time",
           "style": "plain",
-          "foreground": "#91A8A0",
+          "foreground": "#8FA8C9",
           "template": "\uf017 {{ .CurrentDate | date .Format }}",
           "properties": {
             "time_format": "15:04"
@@ -73,7 +73,7 @@
         {
           "type": "status",
           "style": "plain",
-          "foreground": "#A6DFC3",
+          "foreground": "#9FC7F5",
           "foreground_templates": ["{{ if ne .Code 0 }}#ED9B91{{ end }}"],
           "template": "\uf105",
           "properties": {
