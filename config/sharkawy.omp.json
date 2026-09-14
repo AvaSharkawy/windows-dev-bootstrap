@@ -75,7 +75,7 @@
           "type": "shell",
           "style": "diamond",
           "leading_diamond": "\ue0b6",
-          "trailing_diamond": "\ue0b2",
+          "trailing_diamond": "",
           "foreground": "#F8FAFC",
           "background": "#0284C7",
           "template": " \uf120 {{ .Name }} "
@@ -83,7 +83,7 @@
         {
           "type": "time",
           "style": "diamond",
-          "leading_diamond": "\ue0b6",
+          "leading_diamond": "",
           "trailing_diamond": "\ue0b2",
           "foreground": "#ECFEFF",
           "background": "#155E75",
