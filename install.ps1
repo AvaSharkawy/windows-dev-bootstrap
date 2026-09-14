@@ -141,7 +141,8 @@ if (-not $SkipTerminalConfiguration) {
             & pwsh @arguments
             if ($LASTEXITCODE -ne 0) { throw "Failed to configure $color (exit $LASTEXITCODE)." }
         }
-        Write-Ok "Both themes installed. Default: Sharkawy - $Theme"
+        $themeName = if ($Theme -eq 'Blue') { 'Ava Harbor' } else { 'Ava Grove' }
+        Write-Ok "Both themes installed. Default: $themeName"
     } catch {
         Write-Warn "Windows Terminal setup did not finish: $($_.Exception.Message)"
     }
@@ -153,6 +154,6 @@ Write-Host @'
                     SETUP COMPLETE
 ============================================================
 Close every Windows Terminal window and reopen it.
-Choose "Sharkawy - Green" or "Sharkawy - Blue" from the profile menu.
+Choose "Ava Grove" or "Ava Harbor" from the profile menu.
 ============================================================
 '@ -ForegroundColor Green

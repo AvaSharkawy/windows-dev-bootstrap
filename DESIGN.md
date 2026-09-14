@@ -1,10 +1,10 @@
-# Grove and Harbor terminal appearance
+# Ava Grove and Ava Harbor terminal appearance
 
 The Windows Terminal / PowerShell prompt shows folder, Git status, command time,
 and clock using Nerd Font icons. Keep these four groups; avoid extra identity
 badges and cryptic Git punctuation counters.
 
-Grove and Harbor share the same design and feel. Harbor changes colors only:
+Ava Grove (Green) and Ava Harbor (Blue) share the same design and feel. Harbor changes colors only:
 deep navy background (#0F1B2E), soft blue focus (#9FC7F5), pale blue foreground
 (#DCE7F7), muted context (#8FA8C9), lavender-blue branches (#BECAF1), and selection
 (#2A4163). Amber duration/working changes and coral errors remain consistent.

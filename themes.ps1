@@ -1,7 +1,7 @@
 #Requires -Version 7.0
 <#
 .SYNOPSIS
-Register or open a Sharkawy theme in Windows Terminal.
+Register or open an Ava theme in Windows Terminal.
 .DESCRIPTION
 Adds only the named profile and color scheme, with a settings backup.
 The default profile is preserved unless -SetDefault is supplied.
@@ -44,11 +44,13 @@ if ($Session) {
 $preset = Get-Content -LiteralPath (Join-Path $PSScriptRoot "config\$themeFile.terminal.json") -Raw | ConvertFrom-Json -AsHashtable
 if ($Theme -eq 'Blue') {
     $previewGuid = '{b72c07cc-270d-4f64-92dc-83705a6fa9a5}'
-    $previewName = 'Sharkawy · Blue'
+    $previewName = 'Ava Harbor'
+    $legacySchemeName = 'Sharkawy Harbor Preview'
 } else {
     # Retain the original preview GUID so upgrading it creates no duplicate.
     $previewGuid = '{60b00d5e-af83-4f68-8125-83d83de4e97a}'
-    $previewName = 'Sharkawy · Green'
+    $previewName = 'Ava Grove'
+    $legacySchemeName = 'Sharkawy Grove Preview'
 }
 
 if (-not (Test-Path -LiteralPath $SettingsPath -PathType Leaf)) {
@@ -81,7 +83,8 @@ if (-not $Remove) {
 $originalProfiles = @($settings.profiles.list | Where-Object { $_ })
 $originalSchemes = @($settings.schemes | Where-Object { $_ })
 $settings.profiles.list = @($originalProfiles | Where-Object { $_.guid -ne $previewGuid })
-$settings.schemes = @($originalSchemes | Where-Object { $_.name -ne $preset.scheme.name })
+$managedSchemeNames = @($preset.scheme.name, $legacySchemeName)
+$settings.schemes = @($originalSchemes | Where-Object { $_.name -notin $managedSchemeNames })
 if ($Remove) {
     if ($settings.profiles.list.Count -eq $originalProfiles.Count -and $settings.schemes.Count -eq $originalSchemes.Count) {
         Write-Host 'No entries for this theme are installed.'
@@ -94,16 +97,19 @@ if ($Remove) {
             throw 'This theme is your default profile. Choose a different default before removing it, or pass -ResetDefault to return to PowerShell 7.'
         }
     }
-    # Preserve the original palette, including user edits, if referenced anywhere
-    # else (including light/dark variants and unfocusedAppearance).
-    $schemeUsed = ($settings | ConvertTo-Json -Depth 100).Contains(('"{0}"' -f $preset.scheme.name))
-    if ($schemeUsed) {
-        $settings.schemes += @($originalSchemes | Where-Object { $_.name -eq $preset.scheme.name })
-    }
 } else {
     $settings.profiles.list += $previewProfile
     $settings.schemes += $preset.scheme
     if ($SetDefault) { $settings.defaultProfile = $previewGuid }
+}
+
+# Retire unused legacy palette names, but preserve shared palettes and user
+# edits when another profile still references them, including nested settings.
+foreach ($scheme in @($originalSchemes | Where-Object { $_.name -in $managedSchemeNames })) {
+    if (@($settings.schemes | Where-Object name -eq $scheme.name).Count -eq 0 -and
+        ($settings | ConvertTo-Json -Depth 100).Contains(('"{0}"' -f $scheme.name))) {
+        $settings.schemes += $scheme
+    }
 }
 
 $updatedJson = $settings | ConvertTo-Json -Depth 100

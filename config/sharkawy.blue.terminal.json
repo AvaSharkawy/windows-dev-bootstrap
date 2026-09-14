@@ -1,6 +1,6 @@
 {
   "scheme": {
-    "name": "Sharkawy Harbor Preview",
+    "name": "Ava Harbor",
     "background": "#0F1B2E",
     "foreground": "#DCE7F7",
     "cursorColor": "#9FC7F5",
@@ -23,7 +23,7 @@
     "brightWhite": "#F1F6FF"
   },
   "profile": {
-    "colorScheme": "Sharkawy Harbor Preview",
+    "colorScheme": "Ava Harbor",
     "font": {
       "face": "CaskaydiaCove Nerd Font",
       "size": 12,

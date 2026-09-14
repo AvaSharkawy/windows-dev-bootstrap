@@ -1,6 +1,6 @@
 {
   "scheme": {
-    "name": "Sharkawy Grove Preview",
+    "name": "Ava Grove",
     "background": "#111917",
     "foreground": "#DCE8E2",
     "cursorColor": "#A6DFC3",
@@ -23,7 +23,7 @@
     "brightWhite": "#F2F7F4"
   },
   "profile": {
-    "colorScheme": "Sharkawy Grove Preview",
+    "colorScheme": "Ava Grove",
     "font": {
       "face": "CaskaydiaCove Nerd Font",
       "size": 12,

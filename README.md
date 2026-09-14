@@ -1,7 +1,7 @@
 # Windows Dev Bootstrap
 
 A repeatable Windows terminal setup with PowerShell 7, useful shell defaults,
-and two matching themes: **Grove (soft green)** and **Harbor (soft blue)**.
+and two matching themes: **Ava Grove (Green)** and **Ava Harbor (Blue)**.
 
 ## Themes
 
@@ -9,11 +9,11 @@ Both themes share the same two-line layout, Nerd Font icons, spacing, and
 behavior. Only the colors change, including the terminal background, prompt,
 syntax highlighting, suggestions, and selection.
 
-**Green · Grove** — charcoal green with soft mint accents.
+**Ava Grove (Green)** — charcoal green with soft mint accents.
 
 ![Grove prompt with folder, Git status, duration, and clock](docs/images/grove.png)
 
-**Blue · Harbor** — deep navy with soft blue accents, inspired by classic PowerShell.
+**Ava Harbor (Blue)** — deep navy with soft blue accents, inspired by classic PowerShell.
 
 ![Harbor prompt with the same layout in soft blue](docs/images/harbor.png)
 
@@ -30,7 +30,7 @@ These are Oh My Posh prompt renders; Git counts illustrate the layout.
 
 The installer sets up PowerShell 7, Windows Terminal, Oh My Posh, CaskaydiaCove
 Nerd Font, Git, and PSReadLine. It installs both themes under
-`~/.config/windows-dev-bootstrap` and makes **Sharkawy · Green** the default.
+`~/.config/windows-dev-bootstrap` and makes **Ava Grove** the default.
 No repository checkout is required.
 
 Open the built-in **Windows PowerShell** and run:
@@ -54,9 +54,13 @@ after setup so the new font and profiles are available.
 ## Switch between Blue and Green
 
 Click the dropdown arrow beside **+** in Windows Terminal and choose
-**Sharkawy · Blue** or **Sharkawy · Green**. Each opens a tab with matching prompt,
+**Ava Harbor** or **Ava Grove**. Each opens a tab with matching prompt,
 background, and typing colors. Existing tabs keep their own theme; **Ctrl+Tab**
 moves between tabs.
+
+Upgrading renames the previous Sharkawy profiles in place, preserving their IDs
+and your default selection. The `-Theme Green` and `-Theme Blue` commands and
+existing configuration filenames remain compatible.
 
 To change the default for new windows, open **Settings → Startup → Default
 profile**, choose either theme, and save.

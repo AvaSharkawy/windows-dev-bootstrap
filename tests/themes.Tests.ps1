@@ -47,19 +47,42 @@ try {
     # A customized palette referenced through a light/dark or unfocused setting
     # must survive removal of the managed profile.
     $settings = Get-Content -LiteralPath $settingsFile -Raw | ConvertFrom-Json -AsHashtable
-    $settings.profiles.list[0].unfocusedAppearance = @{ colorScheme = @{ dark = 'Sharkawy Grove Preview'; light = 'Other' } }
-    ($settings.schemes | Where-Object name -eq 'Sharkawy Grove Preview').background = '#223344'
+    $settings.profiles.list[0].unfocusedAppearance = @{ colorScheme = @{ dark = 'Ava Grove'; light = 'Other' } }
+    ($settings.schemes | Where-Object name -eq 'Ava Grove').background = '#223344'
     $settings | ConvertTo-Json -Depth 100 | Set-Content -LiteralPath $settingsFile
     & $themeScript -Theme Green -Remove -ResetDefault -SettingsPath $settingsFile 6>$null
     $settings = Get-Content -LiteralPath $settingsFile -Raw | ConvertFrom-Json -AsHashtable
     Assert ($settings.defaultProfile -eq '{574e775e-4f2a-5b96-ac1e-a2962a402336}') 'Uninstall did not restore the standard PowerShell default.'
-    Assert (($settings.schemes | Where-Object name -eq 'Sharkawy Grove Preview').background -eq '#223344') 'Removing Green lost a shared palette or user edits.'
+    Assert (($settings.schemes | Where-Object name -eq 'Ava Grove').background -eq '#223344') 'Removing Green lost a shared palette or user edits.'
     $blueAfter = $settings.profiles.list | Where-Object guid -eq $blueGuid | ConvertTo-Json -Depth 20
     Assert ($blueBefore -ceq $blueAfter) 'Removing Green changed Blue.'
     & $themeScript -Theme Blue -Remove -SettingsPath $settingsFile 6>$null
     $beforeNoop = (Get-FileHash -LiteralPath $settingsFile).Hash
     & $themeScript -Theme Blue -Remove -SettingsPath $settingsFile 6>$null
     Assert ((Get-FileHash -LiteralPath $settingsFile).Hash -eq $beforeNoop) 'Removing an absent theme rewrote settings.'
+
+    foreach ($migration in @(
+        @{ Theme = 'Green'; Guid = $greenGuid; Old = 'Sharkawy Grove Preview'; Name = 'Ava Grove' },
+        @{ Theme = 'Blue'; Guid = $blueGuid; Old = 'Sharkawy Harbor Preview'; Name = 'Ava Harbor' }
+    )) {
+        $legacy = @{
+            defaultProfile = $migration.Guid
+            profiles = @{ list = @(@{ guid = $migration.Guid; name = 'Old profile'; colorScheme = $migration.Old }) }
+            schemes = @(@{ name = $migration.Old; background = '#223344' })
+        }
+        $legacy | ConvertTo-Json -Depth 20 | Set-Content -LiteralPath $settingsFile
+        & $themeScript -Theme $migration.Theme -NoLaunch -SettingsPath $settingsFile 6>$null
+        $renamed = Get-Content -LiteralPath $settingsFile -Raw | ConvertFrom-Json -AsHashtable
+        Assert ($renamed.profiles.list.Count -eq 1 -and $renamed.defaultProfile -eq $migration.Guid) 'Renaming duplicated a profile or changed the default.'
+        Assert ($renamed.profiles.list[0].name -eq $migration.Name -and $renamed.profiles.list[0].tabTitle -eq $migration.Name) 'Profile or tab title did not receive the Ava name.'
+        Assert ($renamed.schemes.Count -eq 1 -and $renamed.schemes[0].name -eq $migration.Name) 'Unused legacy palette was not replaced.'
+
+        $legacy.profiles.list += @{ guid = '{custom}'; unfocusedAppearance = @{ colorScheme = @{ dark = $migration.Old } } }
+        $legacy | ConvertTo-Json -Depth 20 | Set-Content -LiteralPath $settingsFile
+        & $themeScript -Theme $migration.Theme -NoLaunch -SettingsPath $settingsFile 6>$null
+        $shared = Get-Content -LiteralPath $settingsFile -Raw | ConvertFrom-Json -AsHashtable
+        Assert (($shared.schemes | Where-Object name -eq $migration.Old).background -eq '#223344') 'Migration lost an externally referenced legacy palette.'
+    }
 
     Set-Content -LiteralPath $settingsFile -Value '{broken'
     $invalidHash = (Get-FileHash -LiteralPath $settingsFile).Hash
