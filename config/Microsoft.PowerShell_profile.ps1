@@ -54,6 +54,8 @@ if (Get-Module -ListAvailable -Name PSReadLine) {
     }
 
     Set-PSReadLineKeyHandler -Key Tab -Function MenuComplete
+    # Keep prefix-based history search, but put the cursor after the recalled command.
+    Set-PSReadLineOption -HistorySearchCursorMovesToEnd
     Set-PSReadLineKeyHandler -Key UpArrow -Function HistorySearchBackward
     Set-PSReadLineKeyHandler -Key DownArrow -Function HistorySearchForward
     Set-PSReadLineKeyHandler -Key Ctrl+Spacebar -Function MenuComplete
