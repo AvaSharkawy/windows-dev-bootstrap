@@ -67,7 +67,8 @@ and your default selection. The `-Theme Green` and `-Theme Blue` commands and
 existing configuration filenames remain compatible.
 
 To change the default for new windows, open **Settings → Startup → Default
-profile**, choose either theme, and save.
+profile**, choose a theme, and save. The bold entry in the dropdown marks your
+default profile, even when another theme's tab is active.
 
 You can also launch a theme from PowerShell 7:
 
@@ -132,6 +133,20 @@ To remove just one preview, close its tabs and run:
 Choose a different default first if that profile is currently your default.
 Removing one theme preserves the others and any shared palette still in use.
 
+## Create a local theme
+
+Follow [Create your own theme](docs/creating-themes.md) to copy an existing
+palette, customize the prompt and typing colors, and add a separate Windows
+Terminal profile. Personal themes live outside the managed installation so
+updates do not overwrite them.
+
+## Contribute a theme
+
+Community themes are welcome! Submit a pull request to add your theme to the
+built-in collection and the gallery above. See [CONTRIBUTING.md](CONTRIBUTING.md)
+for the integration checklist, preview requirements, and testing instructions.
+Keep the shared layout and icons; give it your own color palette.
+
 ## Uninstall
 
 ```powershell
@@ -163,8 +178,10 @@ config/
   sharkawy.black.omp.json    Midnight prompt
   sharkawy.black.terminal.json
 docs/images/                Prompt renders
+docs/creating-themes.md      Personal theme setup instructions
 tests/themes.Tests.ps1      Isolated settings smoke tests
 DESIGN.md                   Shared appearance rules
+CONTRIBUTING.md              Community theme contribution guide
 ```
 
 Run the settings checks without changing your own Terminal configuration:
