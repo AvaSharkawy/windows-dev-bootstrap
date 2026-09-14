@@ -1,4 +1,14 @@
-# Ava Grove and Ava Harbor terminal appearance
+# Ava terminal appearance
+
+Ava Harbor (Blue) is the default for new installations and commands without an
+explicit theme. Ava Grove (Green) and Ava Midnight (Black) are alternatives.
+The updater preserves an existing user's chosen default.
+
+Midnight uses a true black background (#000000), silver focus (#D8DCE3), soft
+white text (#DEDEDE), muted context (#A0A0A0), and charcoal selection (#303030).
+It shares the same layout, icons, font, and spacing; amber and coral retain their
+timing/change and error meanings. Its files are `config/sharkawy.black.omp.json`
+and `config/sharkawy.black.terminal.json`.
 
 The Windows Terminal / PowerShell prompt shows folder, Git status, command time,
 and clock using Nerd Font icons. Keep these four groups; avoid extra identity
@@ -40,5 +50,5 @@ selected color to apply matching syntax, prediction, and selection colors.
 `preview.ps1 -Theme Green` and `preview.ps1 -Theme Blue` register distinct
 Windows Terminal profiles. Switching is done by opening the desired profile
 from the Terminal dropdown; existing tabs retain their own selected theme.
-The installer deploys both themes and the switcher under the user's bootstrap
-directory; the updater refreshes both without changing the chosen default.
+The installer deploys all three themes and the switcher under the user's bootstrap
+directory; the updater refreshes all three without changing the chosen default.

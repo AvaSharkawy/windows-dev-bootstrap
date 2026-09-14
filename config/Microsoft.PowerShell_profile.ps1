@@ -1,13 +1,13 @@
 # Windows Dev Bootstrap - PowerShell 7 profile
 param(
     [string]$ThemePath,
-    [ValidateSet('Green', 'Blue')]
-    [string]$ColorTheme = 'Green'
+    [ValidateSet('Green', 'Blue', 'Black')]
+    [string]$ColorTheme = 'Blue'
 )
 
 $BootstrapRoot = Join-Path $HOME '.config\windows-dev-bootstrap'
 if (-not $ThemePath) {
-    $themeFile = if ($ColorTheme -eq 'Blue') { 'sharkawy.blue.omp.json' } else { 'sharkawy.omp.json' }
+    $themeFile = switch ($ColorTheme) { 'Blue' { 'sharkawy.blue.omp.json' } 'Black' { 'sharkawy.black.omp.json' } default { 'sharkawy.omp.json' } }
     $ThemePath = Join-Path $BootstrapRoot "config\$themeFile"
     # Support installations made before themes moved into the config directory.
     if (-not (Test-Path -LiteralPath $ThemePath)) {
@@ -44,6 +44,16 @@ if (Get-Module -ListAvailable -Name PSReadLine) {
         $readLineColors.Comment = '#8FA8C9'
         $readLineColors.InlinePrediction = '#7995B8'
         $readLineColors.Selection = "`e[48;2;42;65;99m`e[38;2;220;231;247m"
+    }
+    if ($ColorTheme -eq 'Black') {
+        $readLineColors.Command = '#D8DCE3'
+        $readLineColors.Parameter = '#BBC4D2'
+        $readLineColors.Operator = '#A0A0A0'
+        $readLineColors.Variable = '#DEDEDE'
+        $readLineColors.Type = '#BBC4D2'
+        $readLineColors.Comment = '#A0A0A0'
+        $readLineColors.InlinePrediction = '#858585'
+        $readLineColors.Selection = "`e[48;2;48;48;48m`e[38;2;222;222;222m"
     }
     Set-PSReadLineOption -Colors $readLineColors
 

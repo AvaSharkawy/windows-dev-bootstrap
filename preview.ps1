@@ -5,8 +5,8 @@ Open a theme directly from this checkout, starting in the repository folder.
 #>
 [CmdletBinding(DefaultParameterSetName = 'Preview')]
 param(
-    [ValidateSet('Green', 'Blue')]
-    [string]$Theme = 'Green',
+    [ValidateSet('Green', 'Blue', 'Black')]
+    [string]$Theme = 'Blue',
     [Parameter(ParameterSetName = 'Remove')]
     [switch]$Remove,
     [Parameter(ParameterSetName = 'Preview')]

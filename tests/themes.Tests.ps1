@@ -92,13 +92,26 @@ try {
 
     # Fresh installation starts with an empty settings object.
     Set-Content -LiteralPath $settingsFile -Value '{}'
-    & $themeScript -Theme Blue -NoLaunch -SetDefault -SettingsPath $settingsFile 6>$null
+    & $themeScript -NoLaunch -SetDefault -SettingsPath $settingsFile 6>$null
     $fresh = Get-Content -LiteralPath $settingsFile -Raw | ConvertFrom-Json -AsHashtable
     Assert ($fresh.defaultProfile -eq $blueGuid -and $fresh.profiles.list.Count -eq 1) 'Fresh installation did not select Blue.'
+
+    & $themeScript -Theme Black -NoLaunch -SettingsPath $settingsFile 6>$null
+    & $themeScript -Theme Black -NoLaunch -SettingsPath $settingsFile 6>$null
+    $withBlack = Get-Content -LiteralPath $settingsFile -Raw | ConvertFrom-Json -AsHashtable
+    $black = $withBlack.profiles.list | Where-Object name -eq 'Ava Midnight'
+    Assert ($withBlack.profiles.list.Count -eq 2 -and $withBlack.defaultProfile -eq $blueGuid) 'Adding Midnight duplicated profiles or changed the Blue default.'
+    Assert ($black.colorScheme -eq 'Ava Midnight' -and $black.commandline -like '*-Theme Black') 'Midnight launches the wrong theme.'
+    Assert (($withBlack.schemes | Where-Object name -eq 'Ava Midnight').background -eq '#000000') 'Midnight is not true black.'
+    & $themeScript -Theme Black -Remove -SettingsPath $settingsFile 6>$null
+    $withoutBlack = Get-Content -LiteralPath $settingsFile -Raw | ConvertFrom-Json -AsHashtable
+    Assert ($withoutBlack.profiles.list.Count -eq 1 -and $withoutBlack.defaultProfile -eq $blueGuid) 'Removing Midnight affected Harbor.'
 
     $greenPrompt = Get-Content -LiteralPath (Join-Path $repoRoot 'config\sharkawy.omp.json') -Raw
     $bluePrompt = Get-Content -LiteralPath (Join-Path $repoRoot 'config\sharkawy.blue.omp.json') -Raw
     Assert (($greenPrompt -replace '#[0-9A-Fa-f]{6}', '#COLOR') -ceq ($bluePrompt -replace '#[0-9A-Fa-f]{6}', '#COLOR')) 'The two prompt designs differ beyond colors.'
+    $blackPrompt = Get-Content -LiteralPath (Join-Path $repoRoot 'config\sharkawy.black.omp.json') -Raw
+    Assert (($blackPrompt -replace '#[0-9A-Fa-f]{6}', '#COLOR') -ceq ($bluePrompt -replace '#[0-9A-Fa-f]{6}', '#COLOR')) 'Midnight differs beyond colors.'
     Write-Output 'PASS: registration, defaults, removal, backups, shared palettes, preview paths, and matching theme layouts.'
 } finally {
     # Only delete the files created in this unique, flat test directory.

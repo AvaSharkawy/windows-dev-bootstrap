@@ -5,13 +5,13 @@ Register or open an Ava theme in Windows Terminal.
 .DESCRIPTION
 Adds only the named profile and color scheme, with a settings backup.
 The default profile is preserved unless -SetDefault is supplied.
-Choose -Theme Green or -Theme Blue. Run with -Remove and the same -Theme to
+Choose -Theme Green, Blue, or Black (default: Blue). Run with -Remove and the same -Theme to
 remove just that theme's entries after closing its windows.
 #>
 [CmdletBinding(DefaultParameterSetName = 'Preview')]
 param(
-    [ValidateSet('Green', 'Blue')]
-    [string]$Theme = 'Green',
+    [ValidateSet('Green', 'Blue', 'Black')]
+    [string]$Theme = 'Blue',
     [string]$StartDirectory = $HOME,
     [Parameter(ParameterSetName = 'Preview')]
     [switch]$SetDefault,
@@ -29,7 +29,7 @@ param(
 )
 
 $ErrorActionPreference = 'Stop'
-$themeFile = if ($Theme -eq 'Blue') { 'sharkawy.blue' } else { 'sharkawy' }
+$themeFile = switch ($Theme) { 'Blue' { 'sharkawy.blue' } 'Black' { 'sharkawy.black' } default { 'sharkawy' } }
 $themePath = Join-Path $PSScriptRoot "config\$themeFile.omp.json"
 $profilePath = Join-Path $PSScriptRoot 'config\Microsoft.PowerShell_profile.ps1'
 
@@ -46,6 +46,10 @@ if ($Theme -eq 'Blue') {
     $previewGuid = '{b72c07cc-270d-4f64-92dc-83705a6fa9a5}'
     $previewName = 'Ava Harbor'
     $legacySchemeName = 'Sharkawy Harbor Preview'
+} elseif ($Theme -eq 'Black') {
+    $previewGuid = '{99e9aebe-fcc4-44db-9b21-a935f0826245}'
+    $previewName = 'Ava Midnight'
+    $legacySchemeName = $null
 } else {
     # Retain the original preview GUID so upgrading it creates no duplicate.
     $previewGuid = '{60b00d5e-af83-4f68-8125-83d83de4e97a}'

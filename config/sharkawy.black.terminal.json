@@ -1,0 +1,40 @@
+{
+  "scheme": {
+    "name": "Ava Midnight",
+    "background": "#000000",
+    "foreground": "#DEDEDE",
+    "cursorColor": "#D8DCE3",
+    "selectionBackground": "#303030",
+    "black": "#151515",
+    "red": "#ED9B91",
+    "green": "#D8DCE3",
+    "yellow": "#E6BD87",
+    "blue": "#BBC4D2",
+    "purple": "#D4B8D6",
+    "cyan": "#A7D6EC",
+    "white": "#DEDEDE",
+    "brightBlack": "#A0A0A0",
+    "brightRed": "#F3B6AE",
+    "brightGreen": "#E3E5E9",
+    "brightYellow": "#EFD1AA",
+    "brightBlue": "#D5D9E0",
+    "brightPurple": "#E3CDE4",
+    "brightCyan": "#C2E6F5",
+    "brightWhite": "#F5F5F5"
+  },
+  "profile": {
+    "colorScheme": "Ava Midnight",
+    "font": {
+      "face": "CaskaydiaCove Nerd Font",
+      "size": 12,
+      "weight": "normal"
+    },
+    "padding": "20, 16, 20, 16",
+    "cursorShape": "bar",
+    "opacity": 100,
+    "useAcrylic": false,
+    "antialiasingMode": "grayscale",
+    "backgroundImage": "none",
+    "tabColor": "#181818"
+  }
+}

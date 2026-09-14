@@ -26,9 +26,9 @@ Write-Step 'Installing/verifying CaskaydiaCove Nerd Font'
 & oh-my-posh font install CascadiaCode
 if ($LASTEXITCODE -ne 0) { Write-Warning 'Font installation did not finish. Select an installed Nerd Font in Terminal settings if icons are missing.' }
 
-Write-Step 'Updating both themes and the theme switcher'
+Write-Step 'Updating all three themes and the theme switcher'
 New-Item -ItemType Directory -Path $ConfigRoot -Force | Out-Null
-foreach ($file in @('sharkawy.omp.json', 'sharkawy.blue.omp.json', 'sharkawy.terminal.json', 'sharkawy.blue.terminal.json', 'Microsoft.PowerShell_profile.ps1')) {
+foreach ($file in @('sharkawy.omp.json', 'sharkawy.blue.omp.json', 'sharkawy.terminal.json', 'sharkawy.blue.terminal.json', 'sharkawy.black.omp.json', 'sharkawy.black.terminal.json', 'Microsoft.PowerShell_profile.ps1')) {
     $destination = Join-Path $ConfigRoot $file
     if (Test-Path -LiteralPath $destination) {
         Copy-Item -LiteralPath $destination -Destination "$destination.windows-dev-bootstrap.$(Get-Date -Format 'yyyyMMdd-HHmmss-fff').bak"
@@ -40,7 +40,7 @@ if (Test-Path -LiteralPath $ThemeScript) {
     Copy-Item -LiteralPath $ThemeScript -Destination "$ThemeScript.windows-dev-bootstrap.$(Get-Date -Format 'yyyyMMdd-HHmmss-fff').bak"
 }
 Invoke-WebRequest "$RawBase/themes.ps1" -UseBasicParsing -OutFile $ThemeScript
-Write-Ok 'Both themes updated'
+Write-Ok 'All three themes updated'
 
 Write-Step 'Updating PowerShell profile'
 $profilePath = (& pwsh -NoLogo -NoProfile -Command '$PROFILE.CurrentUserCurrentHost').Trim()
@@ -54,17 +54,17 @@ Copy-Item -LiteralPath (Join-Path $ConfigRoot 'Microsoft.PowerShell_profile.ps1'
 Write-Ok 'PowerShell profile updated'
 
 if (-not $SkipTerminalConfiguration) {
-    Write-Step 'Registering both Windows Terminal themes'
+    Write-Step 'Registering all three Windows Terminal themes'
     $settingsPath = Join-Path $env:LOCALAPPDATA 'Packages\Microsoft.WindowsTerminal_8wekyb3d8bbwe\LocalState\settings.json'
     if (-not (Test-Path -LiteralPath $settingsPath)) {
         New-Item -ItemType Directory -Path (Split-Path $settingsPath -Parent) -Force | Out-Null
         '{}' | Set-Content -LiteralPath $settingsPath -Encoding utf8
     }
-    foreach ($color in @('Green', 'Blue')) {
+    foreach ($color in @('Green', 'Blue', 'Black')) {
         & pwsh -NoLogo -NoProfile -ExecutionPolicy Bypass -File $ThemeScript -Theme $color -NoLaunch -SettingsPath $settingsPath
         if ($LASTEXITCODE -ne 0) { throw "Failed to register $color (exit $LASTEXITCODE)." }
     }
-    Write-Ok 'Both themes registered; your default profile is preserved'
+    Write-Ok 'All three themes registered; your default profile is preserved'
 }
 
 Write-Host "`nUpdate complete. Restart Windows Terminal." -ForegroundColor Green
