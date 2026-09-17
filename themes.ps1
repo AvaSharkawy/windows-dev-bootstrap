@@ -80,7 +80,8 @@ if (-not $Remove) {
     $previewProfile.hidden = $false
     $previewProfile.startingDirectory = $StartDirectory
     $previewProfile.commandline = '"{0}" -NoLogo -NoProfile -NoExit -File "{1}" -Session -Theme {2}' -f $pwshPath, $PSCommandPath, $Theme
-    $previewProfile.suppressApplicationTitle = $true
+    # Let terminal applications (including Codex's working spinner) own the title.
+    $previewProfile.suppressApplicationTitle = $false
     $previewProfile.tabTitle = $previewName
 }
 

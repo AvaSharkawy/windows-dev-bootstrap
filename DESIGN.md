@@ -43,6 +43,10 @@ The source of truth is `config/sharkawy.omp.json`, the PSReadLine colors in
 `themes.ps1` registers, launches, and removes profiles with a settings backup.
 `preview.ps1` uses the same implementation with the checkout as its starting
 directory. Defaults remain intact unless explicitly selected with `-SetDefault`.
+Allow application title changes so tools such as Codex CLI can display working
+status. Theme names remain in the profile dropdown; the shell title shows the
+folder again after an application exits. At an empty input line, Ctrl+C redraws
+the prompt at the actual cursor position to recover from background output.
 
 Harbor's matching files are `config/sharkawy.blue.omp.json` and
 `config/sharkawy.blue.terminal.json`. The shared PowerShell profile receives the

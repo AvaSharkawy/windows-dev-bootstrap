@@ -84,6 +84,30 @@ register it without opening a window. Other profiles, fonts, and shortcuts are
 preserved. Changes to `settings.json` normalize its formatting and remove JSON
 comments; an exact backup is saved first.
 
+Application titles are enabled: Codex CLI can show its working spinner and
+project in the tab title, while the dropdown keeps the theme names. The shell
+restores its folder/PowerShell title when the application exits. Codex's bell
+notifications are independent of its title updates. If you disabled Codex titles,
+merge `terminal_title = ["spinner", "project"]` into the existing `[tui]` section
+of `~/.codex/config.toml` and restart Codex; do not create a second `[tui]` section.
+See the [Codex configuration reference](https://learn.chatgpt.com/docs/config-file/config-reference).
+
+## Recover a prompt after background output
+
+Opening a document by entering its path can launch its associated application,
+which may continue writing logs after PowerShell has returned to the prompt.
+Those logs can move the cursor away from PSReadLine's remembered input position.
+
+At an empty input line, **Ctrl+C** starts a fresh prompt below that output.
+With typed input, it cancels the line; with selected input, it copies as usual.
+While a foreground command is running, its normal Ctrl+C handling still applies.
+This recovery does not stop a background application from producing more logs.
+
+To view Markdown in the terminal, use `Get-Content -LiteralPath 'C:\path\file.md'`.
+To open it in VS Code, use `code.cmd 'C:\path\file.md'` through VS Code's Windows
+CLI launcher (its `bin` directory must be on PATH).
+If output is still arriving, wait for it to settle before recovering the prompt.
+
 ## Update an existing setup
 
 ```powershell

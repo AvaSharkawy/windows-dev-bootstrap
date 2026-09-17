@@ -36,6 +36,7 @@ try {
     Assert ($green.startingDirectory -eq $repoRoot) 'Checkout preview starts outside the repository.'
     Assert ($blue.startingDirectory -eq $HOME) 'Installed switcher does not start at home.'
     Assert ($blue.commandline -like '*themes.ps1" -Session -Theme Blue') 'Blue launches the wrong theme or script.'
+    Assert ($blue.suppressApplicationTitle -eq $false -and $green.suppressApplicationTitle -eq $false) 'Application status titles are blocked.'
     $blueBefore = $blue | ConvertTo-Json -Depth 20
 
     & $themeScript -Theme Green -NoLaunch -SetDefault -SettingsPath $settingsFile 6>$null
@@ -67,7 +68,7 @@ try {
     )) {
         $legacy = @{
             defaultProfile = $migration.Guid
-            profiles = @{ list = @(@{ guid = $migration.Guid; name = 'Old profile'; colorScheme = $migration.Old }) }
+            profiles = @{ list = @(@{ guid = $migration.Guid; name = 'Old profile'; colorScheme = $migration.Old; suppressApplicationTitle = $true }) }
             schemes = @(@{ name = $migration.Old; background = '#223344' })
         }
         $legacy | ConvertTo-Json -Depth 20 | Set-Content -LiteralPath $settingsFile
@@ -75,6 +76,7 @@ try {
         $renamed = Get-Content -LiteralPath $settingsFile -Raw | ConvertFrom-Json -AsHashtable
         Assert ($renamed.profiles.list.Count -eq 1 -and $renamed.defaultProfile -eq $migration.Guid) 'Renaming duplicated a profile or changed the default.'
         Assert ($renamed.profiles.list[0].name -eq $migration.Name -and $renamed.profiles.list[0].tabTitle -eq $migration.Name) 'Profile or tab title did not receive the Ava name.'
+        Assert ($renamed.profiles.list[0].suppressApplicationTitle -eq $false) 'Updating a profile did not enable application titles.'
         Assert ($renamed.schemes.Count -eq 1 -and $renamed.schemes[0].name -eq $migration.Name) 'Unused legacy palette was not replaced.'
 
         $legacy.profiles.list += @{ guid = '{custom}'; unfocusedAppearance = @{ colorScheme = @{ dark = $migration.Old } } }
@@ -102,6 +104,7 @@ try {
     $black = $withBlack.profiles.list | Where-Object name -eq 'Ava Midnight'
     Assert ($withBlack.profiles.list.Count -eq 2 -and $withBlack.defaultProfile -eq $blueGuid) 'Adding Midnight duplicated profiles or changed the Blue default.'
     Assert ($black.colorScheme -eq 'Ava Midnight' -and $black.commandline -like '*-Theme Black') 'Midnight launches the wrong theme.'
+    Assert ($black.suppressApplicationTitle -eq $false) 'Midnight blocks application status titles.'
     Assert (($withBlack.schemes | Where-Object name -eq 'Ava Midnight').background -eq '#000000') 'Midnight is not true black.'
     & $themeScript -Theme Black -Remove -SettingsPath $settingsFile 6>$null
     $withoutBlack = Get-Content -LiteralPath $settingsFile -Raw | ConvertFrom-Json -AsHashtable

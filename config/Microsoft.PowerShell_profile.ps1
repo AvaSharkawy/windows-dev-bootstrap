@@ -70,6 +70,27 @@ if (Get-Module -ListAvailable -Name PSReadLine) {
     Set-PSReadLineKeyHandler -Key DownArrow -Function HistorySearchForward
     Set-PSReadLineKeyHandler -Key Ctrl+Spacebar -Function MenuComplete
     Set-PSReadLineKeyHandler -Key RightArrow -Function ForwardChar
+    Set-PSReadLineKeyHandler -Key Ctrl+c -ScriptBlock {
+        param($key, $arg)
+        $line = $null
+        $cursor = 0
+        $selectionStart = 0
+        $selectionLength = 0
+        [Microsoft.PowerShell.PSConsoleReadLine]::GetBufferState([ref]$line, [ref]$cursor)
+        [Microsoft.PowerShell.PSConsoleReadLine]::GetSelectionState([ref]$selectionStart, [ref]$selectionLength)
+        if ($selectionLength -gt 0 -or $line.Length -gt 0 -or [Console]::IsOutputRedirected) {
+            # Preserve copying selected input and cancellation of a typed command.
+            [Microsoft.PowerShell.PSConsoleReadLine]::CopyOrCancelLine($key, $arg)
+            return
+        }
+
+        # An editor launched through a file association can keep writing after
+        # PowerShell returns. CancelLine would redraw at the old input position,
+        # overwriting those logs. With no input to cancel, start a fresh prompt
+        # at the actual cursor instead. WriteLine also handles bottom-row scroll.
+        [Console]::WriteLine()
+        [Microsoft.PowerShell.PSConsoleReadLine]::InvokePrompt($null, [Console]::CursorTop)
+    }
 }
 
 $Utf8 = [System.Text.UTF8Encoding]::new()
